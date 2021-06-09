@@ -26,7 +26,6 @@ import (
 	"github.com/open-cluster-management/multicloud-operators-channel/pkg/utils"
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	dplutils "github.com/open-cluster-management/multicloud-operators-deployable/pkg/utils"
-	placementutils "github.com/open-cluster-management/multicloud-operators-placementrule/pkg/utils"
 
 	"github.com/go-logr/logr"
 	gerr "github.com/pkg/errors"
@@ -122,13 +121,14 @@ func add(mgr manager.Manager, r reconcile.Reconciler, logger logr.Logger) error 
 		return err
 	}
 
-	if placementutils.IsReadyACMClusterRegistry(mgr.GetAPIReader()) {
-		err = c.Watch(
-			&source.Kind{Type: &spokeClusterV1.ManagedCluster{}},
-			&handler.EnqueueRequestsFromMapFunc{ToRequests: &clusterMapper{Client: mgr.GetClient(), logger: logger}},
-			placementutils.ClusterPredicateFunc,
-		)
-	}
+	// TODO ocm
+	// if placementutils.IsReadyACMClusterRegistry(mgr.GetAPIReader()) {
+	// 	err = c.Watch(
+	// 		&source.Kind{Type: &spokeClusterV1.ManagedCluster{}},
+	// 		&handler.EnqueueRequestsFromMapFunc{ToRequests: &clusterMapper{Client: mgr.GetClient(), logger: logger}},
+	// 		placementutils.ClusterPredicateFunc,
+	// 	)
+	// }
 
 	return err
 }

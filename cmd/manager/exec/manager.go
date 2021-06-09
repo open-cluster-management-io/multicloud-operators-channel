@@ -47,7 +47,6 @@ import (
 
 	helmsync "github.com/open-cluster-management/multicloud-operators-channel/pkg/synchronizer/helmreposynchronizer"
 	objsync "github.com/open-cluster-management/multicloud-operators-channel/pkg/synchronizer/objectstoresynchronizer"
-	placementutils "github.com/open-cluster-management/multicloud-operators-placementrule/pkg/utils"
 )
 
 // Change below variables to serve metrics on different host or port.
@@ -189,7 +188,7 @@ func RunManager() {
 	sig := signals.SetupSignalHandler()
 
 	logger.Info("Detecting ACM cluster API service...")
-	placementutils.DetectClusterRegistry(mgr.GetAPIReader(), sig)
+	// placementutils.DetectClusterRegistry(mgr.GetAPIReader(), sig) TODO ocm
 
 	// Setup webhooks
 	if !options.Debug {

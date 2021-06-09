@@ -340,9 +340,8 @@ github.com/open-cluster-management/api v0.0.0-20201007180356-41d07eee4294 h1:Ek/
 github.com/open-cluster-management/api v0.0.0-20201007180356-41d07eee4294/go.mod h1:F1hDJHtWuV7BAUtfL4XRS9GZjUpksleLgEcisNXvQEw=
 github.com/open-cluster-management/multicloud-operators-deployable v1.2.2-2-20201130-7bc3c h1:9WAqUJxTR6+o5cNpNVTV28j1Y25WH1OaWM+pGGcg3jE=
 github.com/open-cluster-management/multicloud-operators-deployable v1.2.2-2-20201130-7bc3c/go.mod h1:IgsJxFw2EyGpwxTNMz9MzAC3Ci6cry2DErgBl3cv+SI=
+github.com/open-cluster-management/multicloud-operators-placementrule v1.0.1-2020-06-08-14-28-27.0.20201118195339-05a8c4c89c12 h1:iPQiiQSTOYvUXxOYZ4YjcuafOse2LnuY318yhDeJ+NU=
 github.com/open-cluster-management/multicloud-operators-placementrule v1.0.1-2020-06-08-14-28-27.0.20201118195339-05a8c4c89c12/go.mod h1:qoFtdFcv8E5Ewuvw5MCSTfMp5/iVR0kPfdWg7/VTESM=
-github.com/open-cluster-management/multicloud-operators-placementrule v1.2.2-2-20201130-98cfd h1:ihZRmeFl/6leH6jEgO0ILmI5b0u8jfOmFe7I6JUsf3Y=
-github.com/open-cluster-management/multicloud-operators-placementrule v1.2.2-2-20201130-98cfd/go.mod h1:qoFtdFcv8E5Ewuvw5MCSTfMp5/iVR0kPfdWg7/VTESM=
 github.com/openshift/build-machinery-go v0.0.0-20200819073603-48aa266c95f7/go.mod h1:b1BuldmJlbA/xYtdZvKi+7j5YGB44qJUJDZ9zwiNCfE=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
