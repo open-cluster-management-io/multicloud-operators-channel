@@ -94,7 +94,7 @@ if [ "$TRAVIS_BUILD" != 1 ]; then
 fi
 
 echo -e "\nCheck if channel deploy is created\n"
-kubectl rollout status deployment/multicluster-operators-channel
+kubectl rollout status deployment/multicloud-operators-channel
 if [ $? != 0 ]; then
     echo "failed to deploy the channel operator"
     exit $?;

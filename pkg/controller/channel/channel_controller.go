@@ -22,11 +22,7 @@ import (
 
 	spokeClusterV1 "github.com/open-cluster-management/api/cluster/v1"
 	chv1 "github.com/open-cluster-management/multicloud-operators-channel/pkg/apis/apps/v1"
-	helmsync "github.com/open-cluster-management/multicloud-operators-channel/pkg/synchronizer/helmreposynchronizer"
 	"github.com/open-cluster-management/multicloud-operators-channel/pkg/utils"
-	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
-	dplutils "github.com/open-cluster-management/multicloud-operators-deployable/pkg/utils"
-	placementutils "github.com/open-cluster-management/multicloud-operators-placementrule/pkg/utils"
 
 	"github.com/go-logr/logr"
 	gerr "github.com/pkg/errors"
@@ -39,6 +35,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
@@ -55,11 +52,12 @@ import (
 
 var (
 	clusterRules = []rbac.PolicyRule{
-		{
-			Verbs:     []string{"get", "list", "watch"},
-			APIGroups: []string{dplv1.SchemeGroupVersion.Group},
-			Resources: []string{"deployables", "deployables/status", "channels", "channels/status"},
-		},
+		// TODO ocm
+		// {
+		// 	Verbs:     []string{"get", "list", "watch"},
+		// 	APIGroups: []string{dplv1.SchemeGroupVersion.Group},
+		// 	Resources: []string{"deployables", "deployables/status", "channels", "channels/status"},
+		// },
 		{
 			Verbs:     []string{"get", "list", "watch"},
 			APIGroups: []string{""},
@@ -68,9 +66,9 @@ var (
 	}
 
 	//DeployableAnnotation is used to indicate a resource as a logic deployable
-	DeployableAnnotation = dplv1.SchemeGroupVersion.Group + "/deployables"
-	srtGvk               = schema.GroupVersionKind{Group: "", Kind: "Secret", Version: "v1"}
-	cmGvk                = schema.GroupVersionKind{Group: "", Kind: "ConfigMap", Version: "v1"}
+	// DeployableAnnotation = dplv1.SchemeGroupVersion.Group + "/deployables" TODO ocm
+	srtGvk = schema.GroupVersionKind{Group: "", Kind: "Secret", Version: "v1"}
+	cmGvk  = schema.GroupVersionKind{Group: "", Kind: "ConfigMap", Version: "v1"}
 )
 
 const (
@@ -87,7 +85,7 @@ const (
 // Add creates a new Channel Controller and adds it to the Manager with default RBAC. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
 func Add(mgr manager.Manager, dynamicClient dynamic.Interface, recorder record.EventRecorder, logger logr.Logger,
-	channelDescriptor *utils.ChannelDescriptor, sync *helmsync.ChannelSynchronizer) error {
+	channelDescriptor *utils.ChannelDescriptor) error {
 	return add(mgr, newReconciler(mgr, dynamicClient, recorder, logger.WithName(controllerName)), logger.WithName(controllerSetup))
 }
 
@@ -122,13 +120,14 @@ func add(mgr manager.Manager, r reconcile.Reconciler, logger logr.Logger) error 
 		return err
 	}
 
-	if placementutils.IsReadyACMClusterRegistry(mgr.GetAPIReader()) {
-		err = c.Watch(
-			&source.Kind{Type: &spokeClusterV1.ManagedCluster{}},
-			&handler.EnqueueRequestsFromMapFunc{ToRequests: &clusterMapper{Client: mgr.GetClient(), logger: logger}},
-			placementutils.ClusterPredicateFunc,
-		)
-	}
+	// TODO ocm
+	// if placementutils.IsReadyACMClusterRegistry(mgr.GetAPIReader()) {
+	// 	err = c.Watch(
+	// 		&source.Kind{Type: &spokeClusterV1.ManagedCluster{}},
+	// 		&handler.EnqueueRequestsFromMapFunc{ToRequests: &clusterMapper{Client: mgr.GetClient(), logger: logger}},
+	// 		placementutils.ClusterPredicateFunc,
+	// 	)
+	// }
 
 	return err
 }
@@ -203,18 +202,6 @@ func (r *ReconcileChannel) Reconcile(request reconcile.Request) (reconcile.Resul
 			if err := r.syncReferredObjAnnotation(request, nil, srtGvk, log); err != nil {
 				return reconcile.Result{}, err
 			}
-
-			//remove the channel from the serving-channel annotation in all involved ConfigMaps - remove channel
-			if err := r.syncReferredObjAnnotation(request, nil, cmGvk, log); err != nil {
-				return reconcile.Result{}, err
-			}
-
-			if err := utils.CleanupDeployables(r.Client, request.NamespacedName); err != nil {
-				log.Error(err, "failed to reconcile on deletion")
-				return reconcile.Result{}, err
-			}
-
-			return reconcile.Result{}, nil
 		}
 
 		// Error reading the object - requeue the request.
@@ -340,7 +327,7 @@ func (r *ReconcileChannel) syncReferredObjAnnotation(
 		MatchLabels: objLabel,
 	}
 
-	clSelector, err := dplutils.ConvertLabels(labelSelector)
+	clSelector, err := ConvertLabels(labelSelector) // TODO ocm
 	if err != nil {
 		return gerr.Wrap(err, "failed to set label selector for referred object")
 	}
@@ -562,4 +549,20 @@ func (r *ReconcileChannel) FindMultiClusterHubNS(logger logr.Logger) string {
 	logger.Info("There should be ONLY one MultiClusterHub object")
 
 	return ""
+}
+
+// TODO ocm
+// ConvertLabels coverts label selector to lables.Selector
+func ConvertLabels(labelSelector *metav1.LabelSelector) (labels.Selector, error) {
+	if labelSelector != nil {
+		selector, err := metav1.LabelSelectorAsSelector(labelSelector)
+
+		if err != nil {
+			return labels.Nothing(), err
+		}
+
+		return selector, nil
+	}
+
+	return labels.Everything(), nil
 }

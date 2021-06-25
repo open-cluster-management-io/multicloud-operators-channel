@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: multicluster-operators-channel
+  name: multicloud-operators-channel
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: multicluster-operators-channel
+      app: multicloud-operators-channel
   template:
     metadata:
       labels:
-        app: multicluster-operators-channel
+        app: multicloud-operators-channel
     spec:
-      serviceAccountName: multicluster-operators
+      serviceAccountName: multicloud-operators
       containers:
-        - name: multicluster-operators-channel
+        - name: multicloud-operators-channel
           imagePullPolicy: IfNotPresent
-          image: quay.io/open-cluster-management/multicluster-operators-channel:latest
+          image: quay.io/open-cluster-management/multicloud-operators-channel:latest
           ports:
           - containerPort: 9443
             name: chn-whk-server
             protocol: TCP
           command:
-          - /usr/local/bin/multicluster-operators-channel
+          - /usr/local/bin/multicloud-operators-channel
           - --sync-interval=10
           - --zap-devel=true
           env:
@@ -36,9 +36,9 @@ spec:
                fieldRef:
                  fieldPath: metadata.namespace
            - name: DEPLOYMENT_LABEL
-             value: multicluster-operators-channel
+             value: multicloud-operators-channel
            - name: OPERATOR_NAME
-             value: multicluster-operators-channel
+             value: multicloud-operators-channel
           resources:
               requests:
                 cpu: 100m
