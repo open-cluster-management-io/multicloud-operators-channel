@@ -124,35 +124,6 @@ func RunManager() {
 		os.Exit(exitCode)
 	}
 
-	// TODO ocm
-	// //Create channel synchronizer
-	// osync, err := objsync.CreateObjectStoreSynchronizer(cfg, chdesc, options.SyncInterval)
-
-	// if err != nil {
-	// 	logger.Error(err, "unable to create object-store syncrhonizer on destination cluster.")
-	// 	os.Exit(exitCode)
-	// }
-
-	// err = mgr.Add(osync)
-	// if err != nil {
-	// 	logger.Error(err, "Failed to register synchronizer.")
-	// 	os.Exit(exitCode)
-	// }
-
-	// // Create channel synchronizer for helm repo
-	// hsync, err := helmsync.CreateHelmrepoSynchronizer(cfg, mgr.GetScheme(), options.SyncInterval)
-
-	// if err != nil {
-	// 	logger.Error(err, "unable to create helo-repo syncrhonizer on destination cluster.")
-	// 	os.Exit(exitCode)
-	// }
-
-	// err = mgr.Add(hsync)
-	// if err != nil {
-	// 	logger.Error(err, "Failed to register synchronizer.")
-	// 	os.Exit(exitCode)
-	// }
-
 	logger.Info("Registering Components.")
 
 	// Setup Scheme for all resources

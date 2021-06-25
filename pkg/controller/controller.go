@@ -24,12 +24,10 @@ import (
 	"github.com/open-cluster-management/multicloud-operators-channel/pkg/utils"
 )
 
-// TODO ocm
 // AddToManagerFuncs is a list of functions to add all Controllers to the Manager
 var AddToManagerFuncs []func(manager.Manager, dynamic.Interface, record.EventRecorder, logr.Logger,
 	*utils.ChannelDescriptor) error
 
-// TODO ocm
 // AddToManager adds all Controllers to the Manager
 func AddToManager(m manager.Manager, dynamicClient dynamic.Interface, recorder record.EventRecorder,
 	logger logr.Logger, chdesc *utils.ChannelDescriptor) error {

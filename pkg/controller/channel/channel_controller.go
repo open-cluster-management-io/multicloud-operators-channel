@@ -202,12 +202,6 @@ func (r *ReconcileChannel) Reconcile(request reconcile.Request) (reconcile.Resul
 			if err := r.syncReferredObjAnnotation(request, nil, srtGvk, log); err != nil {
 				return reconcile.Result{}, err
 			}
-
-			//remove the channel from the serving-channel annotation in all involved ConfigMaps - remove channel
-			// if err := r.syncReferredObjAnnotation(request, nil, cmGvk, log); err != nil {
-			// 	return reconcile.Result{}, err
-			// }
-			// return reconcile.Result{}, nil
 		}
 
 		// Error reading the object - requeue the request.
