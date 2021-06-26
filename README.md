@@ -4,8 +4,7 @@
 
 - [Overview](#overview)
 - [Deployment](#deployment)
-- [Security response](#security-response)
-- [References](#references)
+- [Community, discussion, contribution, and support](#community,-discussion,-contribution,-and-support)
 
 ## Overview
 
@@ -17,10 +16,14 @@ See how channels are being used in the [multicloud-operators-subscription](https
 
 See `multicloud-operators-subscription` [stand-alone](https://github.com/open-cluster-management-io/multicloud-operators-subscription#stand-alone-deployment) and [multi-cluster](https://github.com/open-cluster-management-io/multicloud-operators-subscription#multi-cluster-deployment) deployments for more information.
 
-## Security response
+## Community, discussion, contribution, and support
 
-Check the [Security Doc](SECURITY.md) if you find a security issue.
+Check the [CONTRIBUTING Doc](CONTRIBUTING.md) for how to contribute to the repo.
 
-## References
+### Communication channels
 
-- The `multicloud-operators-channel` is part of the `open-cluster-management` community. For more information, visit: [open-cluster-management.io](https://open-cluster-management.io).
+Slack channel: [#open-cluster-mgmt](http://slack.k8s.io/#open-cluster-mgmt)
+
+## License
+
+This code is released under the Apache 2.0 license. See the file LICENSE for more information.
