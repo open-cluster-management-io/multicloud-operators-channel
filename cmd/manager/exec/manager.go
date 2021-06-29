@@ -38,12 +38,12 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager/signals"
 
-	chv1 "github.com/open-cluster-management/multicloud-operators-channel/pkg/apis/apps/v1"
+	chv1 "open-cluster-management.io/multicloud-operators-channel/pkg/apis/apps/v1"
 
-	"github.com/open-cluster-management/multicloud-operators-channel/pkg/apis"
-	"github.com/open-cluster-management/multicloud-operators-channel/pkg/controller"
-	"github.com/open-cluster-management/multicloud-operators-channel/pkg/utils"
-	chWebhook "github.com/open-cluster-management/multicloud-operators-channel/pkg/webhook"
+	"open-cluster-management.io/multicloud-operators-channel/pkg/apis"
+	"open-cluster-management.io/multicloud-operators-channel/pkg/controller"
+	"open-cluster-management.io/multicloud-operators-channel/pkg/utils"
+	chWebhook "open-cluster-management.io/multicloud-operators-channel/pkg/webhook"
 )
 
 // Change below variables to serve metrics on different host or port.

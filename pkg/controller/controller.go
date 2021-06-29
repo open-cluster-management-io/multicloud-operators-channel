@@ -21,7 +21,7 @@ import (
 
 	"github.com/go-logr/logr"
 
-	"github.com/open-cluster-management/multicloud-operators-channel/pkg/utils"
+	"open-cluster-management.io/multicloud-operators-channel/pkg/utils"
 )
 
 // AddToManagerFuncs is a list of functions to add all Controllers to the Manager

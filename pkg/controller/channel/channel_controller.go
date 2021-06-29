@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	spokeClusterV1 "github.com/open-cluster-management/api/cluster/v1"
-	chv1 "github.com/open-cluster-management/multicloud-operators-channel/pkg/apis/apps/v1"
-	"github.com/open-cluster-management/multicloud-operators-channel/pkg/utils"
+	chv1 "open-cluster-management.io/multicloud-operators-channel/pkg/apis/apps/v1"
+	"open-cluster-management.io/multicloud-operators-channel/pkg/utils"
 
 	"github.com/go-logr/logr"
 	gerr "github.com/pkg/errors"
