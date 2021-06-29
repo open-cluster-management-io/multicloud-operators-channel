@@ -1,4 +1,4 @@
-module github.com/open-cluster-management/multicloud-operators-channel
+module open-cluster-management.io/multicloud-operators-channel
 
 go 1.16
 
