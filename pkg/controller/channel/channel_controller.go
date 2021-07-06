@@ -20,7 +20,7 @@ import (
 	"reflect"
 	"strings"
 
-	spokeClusterV1 "github.com/open-cluster-management/api/cluster/v1"
+	spokeClusterV1 "open-cluster-management.io/api/cluster/v1"
 	chv1 "open-cluster-management.io/multicloud-operators-channel/pkg/apis/apps/v1"
 	"open-cluster-management.io/multicloud-operators-channel/pkg/utils"
 
@@ -138,8 +138,8 @@ type clusterMapper struct {
 }
 
 // Map triggers all placements
-func (mapper *clusterMapper) Map(obj handler.MapObject) []reconcile.Request {
-	cname := obj.Meta.GetName()
+func (mapper *clusterMapper) Map(obj client.Object) []reconcile.Request {
+	cname := obj.GetName()
 
 	mapper.logger.Info(fmt.Sprintf("In cluster Mapper for %v", cname))
 
@@ -185,7 +185,7 @@ type ReconcileChannel struct {
 // +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=apps.open-cluster-management.io,resources=channels,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=apps.open-cluster-management.io,resources=channels/status,verbs=get;update;patch
-func (r *ReconcileChannel) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *ReconcileChannel) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	log := r.Log.WithValues("channel-reconcile", request.NamespacedName)
 
 	log.Info(fmt.Sprintf("Starting %v reconcile loop for %v", controllerName, request.NamespacedName))
@@ -193,7 +193,7 @@ func (r *ReconcileChannel) Reconcile(request reconcile.Request) (reconcile.Resul
 
 	instance := &chv1.Channel{}
 
-	err := r.Get(context.TODO(), request.NamespacedName, instance)
+	err := r.Get(ctx, request.NamespacedName, instance)
 	if err != nil {
 		if kerr.IsNotFound(err) {
 			// Object not found, return.  Created objects are automatically garbage collected.

@@ -20,7 +20,7 @@ import (
 
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	spokeClusterV1 "github.com/open-cluster-management/api/cluster/v1"
+	spokeClusterV1 "open-cluster-management.io/api/cluster/v1"
 )
 
 // AddToSchemes may be used to add all resources defined in the project to a Scheme
