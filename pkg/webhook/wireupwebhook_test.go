@@ -40,17 +40,14 @@ var _ = PDescribe("test if webhook's supplymentryResource create properly", func
 			lMgr   mgr.Manager
 			testNs string
 			err    error
-			sstop  chan struct{}
 		)
 
 		It("should create a service and ValidatingWebhookConfiguration", func() {
 			lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
 			Expect(err).Should(BeNil())
 
-			sstop = make(chan struct{})
-			defer close(sstop)
 			go func() {
-				Expect(lMgr.Start(sstop)).Should(Succeed())
+				Expect(lMgr.Start(context.Background())).Should(Succeed())
 			}()
 
 			testNs = "default"
@@ -62,7 +59,7 @@ var _ = PDescribe("test if webhook's supplymentryResource create properly", func
 				w.WebhookName = wbhName
 			}
 
-			wireUp, err := NewWireUp(lMgr, sstop, wbhNameSetUp)
+			wireUp, err := NewWireUp(context.Background(), lMgr, wbhNameSetUp)
 			Expect(err).NotTo(HaveOccurred())
 
 			clt, err := client.New(ctrl.GetConfigOrDie(), client.Options{})

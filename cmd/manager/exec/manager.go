@@ -164,7 +164,7 @@ func RunManager() {
 	if !options.Debug {
 		logger.Info("setting up webhook server")
 
-		wiredWebhook, err := chWebhook.NewWireUp(mgr, sig, chWebhook.ValidateLogic)
+		wiredWebhook, err := chWebhook.NewWireUp(sig, mgr, chWebhook.ValidateLogic)
 		if err != nil {
 			logger.Error(err, "failed to initial wire up webhook")
 			os.Exit(exitCode)
