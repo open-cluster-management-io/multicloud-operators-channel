@@ -52,12 +52,12 @@ import (
 
 var (
 	clusterRules = []rbac.PolicyRule{
-		// TODO ocm
-		// {
-		// 	Verbs:     []string{"get", "list", "watch"},
-		// 	APIGroups: []string{dplv1.SchemeGroupVersion.Group},
-		// 	Resources: []string{"deployables", "deployables/status", "channels", "channels/status"},
-		// },
+		// TODO ocm edit removed deployable
+		{
+			Verbs:     []string{"get", "list", "watch"},
+			APIGroups: []string{chv1.SchemeGroupVersion.Group},
+			Resources: []string{"channels", "channels/status"},
+		},
 		{
 			Verbs:     []string{"get", "list", "watch"},
 			APIGroups: []string{""},
@@ -407,8 +407,8 @@ func (r *ReconcileChannel) validateClusterRBAC(instance *chv1.Channel, logger lo
 	for _, cl := range cllist.Items {
 		subjects = append(subjects, rbac.Subject{
 			APIGroup: "rbac.authorization.k8s.io",
-			Kind:     "Group",
-			Name:     "system:open-cluster-management:cluster:" + cl.Name + ":addon:application-manager",
+			Kind:     "User",
+			Name:     "system:open-cluster-management:cluster:" + cl.Name + ":addon:application-manager:agent:appmgr",
 		})
 	}
 
