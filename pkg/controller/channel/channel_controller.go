@@ -1,4 +1,4 @@
-// Copyright 2019 The Kubernetes Authors.
+// Copyright 2021 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
@@ -52,7 +51,6 @@ import (
 
 var (
 	clusterRules = []rbac.PolicyRule{
-		// TODO ocm edit removed deployable
 		{
 			Verbs:     []string{"get", "list", "watch"},
 			APIGroups: []string{chv1.SchemeGroupVersion.Group},
@@ -65,8 +63,6 @@ var (
 		},
 	}
 
-	//DeployableAnnotation is used to indicate a resource as a logic deployable
-	// DeployableAnnotation = dplv1.SchemeGroupVersion.Group + "/deployables" TODO ocm
 	srtGvk = schema.GroupVersionKind{Group: "", Kind: "Secret", Version: "v1"}
 	cmGvk  = schema.GroupVersionKind{Group: "", Kind: "ConfigMap", Version: "v1"}
 )
@@ -120,14 +116,14 @@ func add(mgr manager.Manager, r reconcile.Reconciler, logger logr.Logger) error 
 		return err
 	}
 
-	// TODO ocm
-	// if placementutils.IsReadyACMClusterRegistry(mgr.GetAPIReader()) {
-	// 	err = c.Watch(
-	// 		&source.Kind{Type: &spokeClusterV1.ManagedCluster{}},
-	// 		&handler.EnqueueRequestsFromMapFunc{ToRequests: &clusterMapper{Client: mgr.GetClient(), logger: logger}},
-	// 		placementutils.ClusterPredicateFunc,
-	// 	)
-	// }
+	if utils.IsReadyClusterRegistry(mgr.GetAPIReader()) {
+		cmapper := &clusterMapper{Client: mgr.GetClient(), logger: logger}
+		err = c.Watch(
+			&source.Kind{Type: &spokeClusterV1.ManagedCluster{}},
+			handler.EnqueueRequestsFromMapFunc(cmapper.Map),
+			utils.ClusterPredicateFunc,
+		)
+	}
 
 	return err
 }
@@ -202,6 +198,13 @@ func (r *ReconcileChannel) Reconcile(ctx context.Context, request reconcile.Requ
 			if err := r.syncReferredObjAnnotation(request, nil, srtGvk, log); err != nil {
 				return reconcile.Result{}, err
 			}
+
+			//remove the channel from the serving-channel annotation in all involved ConfigMaps - remove channel
+			if err := r.syncReferredObjAnnotation(request, nil, cmGvk, log); err != nil {
+				return reconcile.Result{}, err
+			}
+
+			return reconcile.Result{}, nil
 		}
 
 		// Error reading the object - requeue the request.
@@ -327,7 +330,7 @@ func (r *ReconcileChannel) syncReferredObjAnnotation(
 		MatchLabels: objLabel,
 	}
 
-	clSelector, err := ConvertLabels(labelSelector) // TODO ocm
+	clSelector, err := utils.ConvertLabels(labelSelector)
 	if err != nil {
 		return gerr.Wrap(err, "failed to set label selector for referred object")
 	}
@@ -555,20 +558,4 @@ func (r *ReconcileChannel) FindMultiClusterHubNS(logger logr.Logger) string {
 	logger.Info("There should be ONLY one MultiClusterHub object")
 
 	return ""
-}
-
-// TODO ocm
-// ConvertLabels coverts label selector to lables.Selector
-func ConvertLabels(labelSelector *metav1.LabelSelector) (labels.Selector, error) {
-	if labelSelector != nil {
-		selector, err := metav1.LabelSelectorAsSelector(labelSelector)
-
-		if err != nil {
-			return labels.Nothing(), err
-		}
-
-		return selector, nil
-	}
-
-	return labels.Everything(), nil
 }

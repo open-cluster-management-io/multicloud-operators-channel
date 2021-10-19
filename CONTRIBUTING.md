@@ -28,9 +28,9 @@ contribution. See the [DCO](DCO) file for details.
 ## Contributing A Patch
 
 1. Submit an issue describing your proposed change to the repo in question.
-2. The [repo owners](OWNERS) will respond to your issue promptly.
-3. Fork the desired repo, develop and test your code changes.
-4. Submit a pull request.
+1. The [repo owners](OWNERS) will respond to your issue promptly.
+1. Fork the desired repo, develop and test your code changes.
+1. Submit a pull request.
 
 ## Issue and Pull Request Management
 
@@ -45,22 +45,15 @@ Repo maintainers can assign you an issue or pull request by leaving a
 
 After your PR is ready to commit, please run following commands to check your code.
 
-- verify your code
-  ```shell
-  make lint
-  ```
+```shell
+make build
+make test
+```
 
-- build your code
-  ```shell
-  make build
-  ```
+## Build images
 
-- build a local image
-  ```shell
-  make build-images
-  ```
+Make sure your code build passed.
 
-- run the test
-  ```shell
-  make test
-  ```
+```shell
+make
+```

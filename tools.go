@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controller
+// +build tools
 
-import (
-	chv1 "open-cluster-management.io/multicloud-operators-channel/pkg/controller/channel"
-)
-
-func init() {
-	// AddToManagerFuncs is a list of functions to create controllers and add them to a manager.
-	AddToManagerFuncs = append(AddToManagerFuncs, chv1.Add)
-}
+package tools

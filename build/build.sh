@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #
 # Copyright 2021 The Kubernetes Authors.
 #
@@ -14,8 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.28.3
 
-export GOLANGCI_LINT_CACHE=/tmp/golangci-cache
-rm -rf $GOLANGCI_LINT_CACHE
-GOGC=25 golangci-lint run -c ./common/config/.golangci.yml
+echo "BUILD GOES HERE!"
+
+echo "<repo>/<component>:<tag> : $1"
+
+# Run our build target and set IMAGE_NAME_AND_VERSION
+export IMAGE_NAME_AND_VERSION=${1}
+make build
+make build-images

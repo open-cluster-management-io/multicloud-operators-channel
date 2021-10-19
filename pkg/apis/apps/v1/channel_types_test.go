@@ -1,4 +1,4 @@
-// Copyright 2019 The Kubernetes Authors.
+// Copyright 2021 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,10 +50,11 @@ func TestObjectStorageForChannel(t *testing.T) {
 
 	g.Expect(c.Create(context.TODO(), created)).NotTo(gomega.HaveOccurred())
 
-	stopMgr, mgrStopped := StartTestManager(mgr, g)
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
 
 	defer func() {
-		stopMgr()
+		cancel()
 		mgrStopped.Wait()
 	}()
 	// Test Create

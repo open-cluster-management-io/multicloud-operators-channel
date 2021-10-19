@@ -1,4 +1,4 @@
-// Copyright 2019 The Kubernetes Authors.
+// Copyright 2021 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
+	"helm.sh/helm/v3/pkg/repo"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/helm/pkg/repo"
 )
 
 const (

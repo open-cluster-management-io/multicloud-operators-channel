@@ -1,4 +1,4 @@
-// Copyright 2019 The Kubernetes Authors.
+// Copyright 2021 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -66,6 +66,13 @@ func TestMain(m *testing.M) {
 
 	err = c.Create(context.Background(), &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{Name: "ch-qa"},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = c.Create(context.Background(), &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{Name: "a-ns"},
 	})
 	if err != nil {
 		log.Fatal(err)

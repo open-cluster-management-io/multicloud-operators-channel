@@ -1,4 +1,4 @@
-// Copyright 2019 The Kubernetes Authors.
+// Copyright 2021 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -89,6 +89,7 @@ var _ = BeforeSuite(func(done Done) {
 				filepath.Join("..", "..", "deploy", "dependent-crds")},
 		}
 	}
+
 	var err error
 	// be careful, if we use shorthand assignment, the the cCfg will be a local variable
 	initializeWebhookInEnvironment()
