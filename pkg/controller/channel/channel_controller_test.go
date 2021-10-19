@@ -1,4 +1,4 @@
-// Copyright 2019 The Kubernetes Authors.
+// Copyright 2021 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -82,10 +82,11 @@ func TestChannelControllerReconcile(t *testing.T) {
 	recFn, requests := SetupTestReconcile(newReconciler(mgr, dynamicClient, recorder, logr.DiscardLogger{}))
 	g.Expect(add(mgr, recFn, logr.DiscardLogger{})).NotTo(gomega.HaveOccurred())
 
-	stopMgr, mgrStopped := StartTestManager(mgr, g)
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
 
 	defer func() {
-		stopMgr()
+		cancel()
 		mgrStopped.Wait()
 	}()
 
@@ -96,7 +97,6 @@ func TestChannelControllerReconcile(t *testing.T) {
 
 	defer c.Delete(context.TODO(), channelInstance)
 
-	time.Sleep(time.Second * 1)
 	g.Eventually(requests, timeout).Should(gomega.Receive(gomega.Equal(expectedRequest)))
 }
 
@@ -139,10 +139,11 @@ func TestChannelAnnotateReferredSecertAndConfigMap(t *testing.T) {
 
 	tRecorder := record.NewBroadcaster().NewRecorder(mgr.GetScheme(), corev1.EventSource{Component: "channel"})
 
-	stopMgr, mgrStopped := StartTestManager(mgr, g)
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
 
 	defer func() {
-		stopMgr()
+		cancel()
 		mgrStopped.Wait()
 	}()
 
@@ -294,10 +295,11 @@ func TestChannelReconcileWithoutClusterCRD(t *testing.T) {
 
 	tRecorder := record.NewBroadcaster().NewRecorder(mgr.GetScheme(), corev1.EventSource{Component: "channel"})
 
-	stopMgr, mgrStopped := StartTestManager(mgr, g)
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
 
 	defer func() {
-		stopMgr()
+		cancel()
 		mgrStopped.Wait()
 	}()
 
