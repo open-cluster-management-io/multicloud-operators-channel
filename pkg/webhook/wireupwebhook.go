@@ -151,7 +151,7 @@ func DelPreValiationCfg20(clt client.Client) error {
 
 //assuming we have a service set up for the webhook, and the service is linking
 //to a secret which has the CA
-func (w *WireUp) WireUpWebhookSupplymentryResource(isExternalApiServer bool, inClient client.Client,
+func (w *WireUp) WireUpWebhookSupplymentryResource(isExternalAPIServer bool, inClient client.Client,
 	caCert []byte, gvk schema.GroupVersionKind, ops []admissionv1.OperationType, cFuncs ...CleanUpFunc) error {
 	w.Logger.Info("entry wire up webhook resources")
 	defer w.Logger.Info("exit wire up webhook resources")
@@ -168,7 +168,7 @@ func (w *WireUp) WireUpWebhookSupplymentryResource(isExternalApiServer bool, inC
 		}
 	}
 
-	return gerr.Wrap(w.createOrUpdateValiationWebhook(isExternalApiServer, inClient, caCert, gvk, ops), "failed to set up the validation webhook config")
+	return gerr.Wrap(w.createOrUpdateValiationWebhook(isExternalAPIServer, inClient, caCert, gvk, ops), "failed to set up the validation webhook config")
 }
 
 func findEnvVariable(envName string) (string, error) {
@@ -180,7 +180,7 @@ func findEnvVariable(envName string) (string, error) {
 	return val, nil
 }
 
-func (w *WireUp) getOrCreateWebhookService(isExternalApiServer bool, inClusterClient client.Client) error {
+func (w *WireUp) getOrCreateWebhookService(isExternalAPIServer bool, inClusterClient client.Client) error {
 	service := &corev1.Service{}
 
 	outCLusterClient := w.mgr.GetClient()
@@ -215,8 +215,8 @@ func (w *WireUp) getOrCreateWebhookService(isExternalApiServer bool, inClusterCl
 
 	w.Logger.Info(fmt.Sprintf("created in Cluster service %s ", w.WebHookeSvcKey.String()))
 
-	// 2. If isExternalApiServer = true, create the additional service in the hosted cluster
-	if !isExternalApiServer {
+	// 2. If isExternalAPIServer = true, create the additional service in the hosted cluster
+	if !isExternalAPIServer {
 		return nil
 	}
 
@@ -259,7 +259,7 @@ func (w *WireUp) getOrCreateWebhookService(isExternalApiServer bool, inClusterCl
 		return errors.New("no service Cluster IP found: " + w.WebHookeSvcKey.String())
 	}
 
-	// 4. If isExternalApiServer = true, create the additional endpoint in the hosted cluster
+	// 4. If isExternalAPIServer = true, create the additional endpoint in the hosted cluster
 	endpoint := &corev1.Endpoints{}
 	err = outCLusterClient.Get(context.TODO(), w.WebHookeSvcKey, endpoint)
 
@@ -288,7 +288,7 @@ func (w *WireUp) getOrCreateWebhookService(isExternalApiServer bool, inClusterCl
 	return nil
 }
 
-func (w *WireUp) createOrUpdateValiationWebhook(isExternalApiServer bool, inClient client.Client,
+func (w *WireUp) createOrUpdateValiationWebhook(isExternalAPIServer bool, inClient client.Client,
 	ca []byte, gvk schema.GroupVersionKind,
 	ops []admissionv1.OperationType) error {
 	validator := &admissionv1.ValidatingWebhookConfiguration{}
@@ -323,7 +323,7 @@ func (w *WireUp) createOrUpdateValiationWebhook(isExternalApiServer bool, inClie
 	}
 
 	// make sure the service of the validator exists
-	return gerr.Wrap(w.getOrCreateWebhookService(isExternalApiServer, inClient), "failed to set up service for webhook")
+	return gerr.Wrap(w.getOrCreateWebhookService(isExternalAPIServer, inClient), "failed to set up service for webhook")
 }
 
 func setOwnerReferences(c client.Client, logger logr.Logger, deployNs string, deployLabel string, obj metav1.Object) {
@@ -367,9 +367,9 @@ func setWebhookOwnerReferences(c client.Client, logger logr.Logger, obj metav1.O
 	})
 }
 
-func newWebhookServiceTemplate(isExternalApiServer bool, svcKey types.NamespacedName, webHookPort,
+func newWebhookServiceTemplate(isExternalAPIServer bool, svcKey types.NamespacedName, webHookPort,
 	webHookServicePort int, deploymentSelector map[string]string) *corev1.Service {
-	if isExternalApiServer {
+	if isExternalAPIServer {
 		// if the service is created on hosted cluster, no selector and target port should be specicified as the webhook server pod is not running there
 		return &corev1.Service{
 			TypeMeta: metav1.TypeMeta{

@@ -106,15 +106,15 @@ func RunManager() {
 		os.Exit(exitCode)
 	}
 
-	isExternalApiServer := false
+	isExternalAPIServer := false
 	cfg = inConfig
 
 	if !equality.Semantic.DeepEqual(inConfig, outConfig) {
 		cfg = outConfig
-		isExternalApiServer = true
+		isExternalAPIServer = true
 	}
 
-	if isExternalApiServer {
+	if isExternalAPIServer {
 		logger.Info("connect to external api server, kubeconfig:" + options.KubeConfig)
 	}
 
@@ -216,7 +216,7 @@ func RunManager() {
 		}
 
 		go func() {
-			if err := wiredWebhook.WireUpWebhookSupplymentryResource(isExternalApiServer, inClt,
+			if err := wiredWebhook.WireUpWebhookSupplymentryResource(isExternalAPIServer, inClt,
 				caCert, chv1.SchemeGroupVersion.WithKind(kindName),
 				[]admissionv1.OperationType{admissionv1.Create}, chWebhook.DelPreValiationCfg20); err != nil {
 				logger.Error(err, "failed to set up webhook configuration")
