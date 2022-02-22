@@ -109,7 +109,7 @@ func RunManager() {
 	isExternalAPIServer := false
 	cfg = inConfig
 
-	if !equality.Semantic.DeepEqual(inConfig, outConfig) {
+	if outConfig != nil && !equality.Semantic.DeepEqual(inConfig, outConfig) {
 		cfg = outConfig
 		isExternalAPIServer = true
 	}
