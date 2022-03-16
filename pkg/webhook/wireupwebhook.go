@@ -313,6 +313,12 @@ func (w *WireUp) createOrUpdateValiationWebhook(isExternalAPIServer bool, inClie
 		validator.Webhooks[0].ClientConfig.Service.Name = w.WebHookeSvcKey.Name
 		validator.Webhooks[0].ClientConfig.CABundle = ca
 
+		ignore := admissionv1.Ignore
+		timeoutSeconds := int32(30)
+
+		validator.Webhooks[0].FailurePolicy = &ignore
+		validator.Webhooks[0].TimeoutSeconds = &timeoutSeconds
+
 		setWebhookOwnerReferences(w.mgr.GetClient(), w.Logger, validator)
 
 		if err := w.mgr.GetClient().Update(context.TODO(), validator); err != nil {
