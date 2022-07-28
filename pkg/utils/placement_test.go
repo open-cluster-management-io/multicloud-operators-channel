@@ -15,12 +15,15 @@
 package utils
 
 import (
+	"context"
 	"testing"
+	"time"
 
 	"github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	spokeClusterV1 "open-cluster-management.io/api/cluster/v1"
 	"sigs.k8s.io/controller-runtime/pkg/event"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
 var (
@@ -87,5 +90,24 @@ func TestPredicate(t *testing.T) {
 		ObjectNew: newCluster,
 	}
 	ret := instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+}
+
+func TestIsReadyClusterRegistry(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+
+	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: "0"})
+	g.Expect(err).NotTo(gomega.HaveOccurred())
+
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
+
+	defer func() {
+		cancel()
+		mgrStopped.Wait()
+	}()
+
+	// test IsReadyACMClusterRegistry
+	ret := IsReadyClusterRegistry(mgr.GetAPIReader())
 	g.Expect(ret).To(gomega.Equal(true))
 }
