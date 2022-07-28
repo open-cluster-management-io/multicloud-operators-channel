@@ -160,7 +160,6 @@ func TestPredicate(t *testing.T) {
 	}
 	ret = instance.Update(updateEvt)
 	g.Expect(ret).To(gomega.Equal(true))
-
 }
 
 func TestIsReadyClusterRegistry(t *testing.T) {

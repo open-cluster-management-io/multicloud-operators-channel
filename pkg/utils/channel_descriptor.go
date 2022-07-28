@@ -111,7 +111,7 @@ func getCredentialFromKube(secretRef *corev1.ObjectReference, defaultNs string, 
 		return "", "", "", errors.Wrap(err, "unable to get secret")
 	}
 
-	accessKeyID, secretAccessKey, region = ParseSecertInfo(secret)
+	accessKeyID, secretAccessKey, region = ParseSecretInfo(secret)
 
 	return accessKeyID, secretAccessKey, region, nil
 }
