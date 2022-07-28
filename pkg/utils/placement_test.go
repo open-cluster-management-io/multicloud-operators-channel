@@ -77,6 +77,59 @@ var (
 			Conditions: []metav1.Condition{newClusterCond},
 		},
 	}
+
+	// Different labels
+	oldCluster2 = &spokeClusterV1.ManagedCluster{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ManagedCluster",
+			APIVersion: "cluster.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "cluster1",
+			Labels: map[string]string{
+				"name": "cluster1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+	}
+
+	newCluster2 = &spokeClusterV1.ManagedCluster{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ManagedCluster",
+			APIVersion: "cluster.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "cluster1",
+			Labels: map[string]string{
+				"name": "cluster1",
+				"key1": "diff",
+				"key2": "diff",
+			},
+		},
+	}
+
+	// Different deletiontimestamps
+	oldCluster3 = &spokeClusterV1.ManagedCluster{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ManagedCluster",
+			APIVersion: "cluster.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:              "cluster1",
+			DeletionTimestamp: &metav1.Time{},
+		},
+	}
+
+	newCluster3 = &spokeClusterV1.ManagedCluster{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ManagedCluster",
+			APIVersion: "cluster.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "cluster1",
+		},
+	}
 )
 
 func TestPredicate(t *testing.T) {
@@ -91,6 +144,23 @@ func TestPredicate(t *testing.T) {
 	}
 	ret := instance.Update(updateEvt)
 	g.Expect(ret).To(gomega.Equal(true))
+
+	// Different deletiontimestamp
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldCluster3,
+		ObjectNew: newCluster3,
+	}
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
+	// Different labels
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldCluster2,
+		ObjectNew: newCluster2,
+	}
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
 }
 
 func TestIsReadyClusterRegistry(t *testing.T) {
