@@ -27,8 +27,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
-
-	ctrl "sigs.k8s.io/controller-runtime"
 )
 
 var _ = Describe("test if webhook's supplymentryResource create properly", func() {
@@ -65,7 +63,7 @@ var _ = Describe("test if webhook's supplymentryResource create properly", func(
 			wireUp, err := NewWireUp(context.TODO(), lMgr, wbhNameSetUp)
 			Expect(err).NotTo(HaveOccurred())
 
-			clt, err := client.New(ctrl.GetConfigOrDie(), client.Options{})
+			clt, err := client.New(cfg, client.Options{})
 			Expect(err).NotTo(HaveOccurred())
 
 			caCert, err := wireUp.Attach(clt)
