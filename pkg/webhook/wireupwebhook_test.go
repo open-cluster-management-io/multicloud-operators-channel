@@ -45,10 +45,7 @@ func TestWireupWebhook(t *testing.T) {
 		mgrStopped.Wait()
 	}()
 
-	// lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
-	// Expect(err).Should(BeNil())
-
-	// Expect(lMgr.Start(context.TODO())).Should(Succeed())
+	g.Expect(mgr.GetCache().WaitForCacheSync(ctx)).Should(BeTrue())
 
 	testNs := "default"
 	os.Setenv("POD_NAMESPACE", testNs)
@@ -61,9 +58,6 @@ func TestWireupWebhook(t *testing.T) {
 
 	wireUp, err := NewWireUp(context.TODO(), mgr, wbhNameSetUp)
 	Expect(err).NotTo(HaveOccurred())
-
-	// k8sClient, err := client.New(cfg, client.Options{})
-	// Expect(err).NotTo(HaveOccurred())
 
 	caCert, err := wireUp.Attach(k8sClient)
 	Expect(err).NotTo(HaveOccurred())
@@ -85,16 +79,14 @@ func TestWireupWebhook(t *testing.T) {
 	wbhSvc := &corev1.Service{}
 	svcKey := wireUp.WebHookeSvcKey
 	Expect(mgr.GetClient().Get(context.TODO(), svcKey, wbhSvc)).Should(Succeed())
-	defer func() {
-		Expect(mgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
-	}()
+	// Expect(mgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
 
 	wbhCfg := &admissionv1.ValidatingWebhookConfiguration{}
 	cfgKey := types.NamespacedName{Name: GetValidatorName(wbhName)}
 	Expect(mgr.GetClient().Get(context.TODO(), cfgKey, wbhCfg)).Should(Succeed())
 
-	defer func() {
-		Expect(mgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
-	}()
+	// defer func() {
+	// Expect(mgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
+	// }()
 
 }
