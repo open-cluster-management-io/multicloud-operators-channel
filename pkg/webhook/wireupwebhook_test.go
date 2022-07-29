@@ -29,7 +29,6 @@ import (
 )
 
 func TestWireupWebhook(t *testing.T) {
-
 	g := NewGomegaWithT(t)
 
 	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: "0"})
@@ -75,18 +74,19 @@ func TestWireupWebhook(t *testing.T) {
 		[]admissionv1.OperationType{admissionv1.Create})
 	Expect(err).NotTo(HaveOccurred())
 
-	time.Sleep(3 * time.Second)
 	wbhSvc := &corev1.Service{}
 	svcKey := wireUp.WebHookeSvcKey
 	Expect(mgr.GetClient().Get(context.TODO(), svcKey, wbhSvc)).Should(Succeed())
-	// Expect(mgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
+
+	defer func() {
+		Expect(mgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
+	}()
 
 	wbhCfg := &admissionv1.ValidatingWebhookConfiguration{}
 	cfgKey := types.NamespacedName{Name: GetValidatorName(wbhName)}
 	Expect(mgr.GetClient().Get(context.TODO(), cfgKey, wbhCfg)).Should(Succeed())
 
-	// defer func() {
-	// Expect(mgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
-	// }()
-
+	defer func() {
+		Expect(mgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
+	}()
 }
