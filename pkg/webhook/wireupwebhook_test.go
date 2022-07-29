@@ -31,7 +31,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-var _ = PDescribe("test if webhook's supplymentryResource create properly", func() {
+var _ = Describe("test if webhook's supplymentryResource create properly", func() {
 	// somehow this test only fail on travis
 	// make sure this one runs at the end, otherwise, we might register this
 	// webhook before the default one, which cause unexpected results.
@@ -71,9 +71,18 @@ var _ = PDescribe("test if webhook's supplymentryResource create properly", func
 			caCert, err := wireUp.Attach(clt)
 			Expect(err).NotTo(HaveOccurred())
 
-			wireUp.WireUpWebhookSupplymentryResource(false, clt, caCert,
+			err = DelPreValiationCfg20(clt)
+			Expect(err).NotTo(HaveOccurred())
+
+			err = wireUp.WireUpWebhookSupplymentryResource(false, clt, caCert,
 				schema.GroupVersionKind{Group: "", Version: "v1", Kind: "channels"},
 				[]admissionv1.OperationType{admissionv1.Create})
+			Expect(err).NotTo(HaveOccurred())
+
+			err = wireUp.WireUpWebhookSupplymentryResource(true, clt, caCert,
+				schema.GroupVersionKind{Group: "", Version: "v1", Kind: "channels"},
+				[]admissionv1.OperationType{admissionv1.Create})
+			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(3 * time.Second)
 			wbhSvc := &corev1.Service{}
