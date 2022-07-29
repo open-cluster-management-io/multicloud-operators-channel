@@ -54,6 +54,7 @@ var _ = Describe("test if webhook's supplymentryResource create properly", func(
 			}()
 
 			testNs = "default"
+			os.Setenv("KUBECONFIG", "~/.kube/kubeconfig.yml")
 			os.Setenv("POD_NAMESPACE", testNs)
 			os.Setenv("DEPLOYMENT_LABEL", testNs)
 
