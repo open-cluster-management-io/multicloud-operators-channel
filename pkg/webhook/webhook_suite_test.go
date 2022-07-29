@@ -29,7 +29,6 @@ import (
 	"github.com/onsi/ginkgo/config"
 	"github.com/onsi/ginkgo/reporters"
 	"github.com/onsi/ginkgo/reporters/stenographer"
-	"github.com/onsi/gomega"
 	. "github.com/onsi/gomega"
 
 	"github.com/onsi/gomega/gexec"
@@ -42,7 +41,6 @@ import (
 	admissionv1 "k8s.io/api/admissionregistration/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"sigs.k8s.io/controller-runtime/pkg/manager"
 	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
@@ -103,7 +101,7 @@ func TestMain(m *testing.M) {
 }
 
 // StartTestManager adds recFn
-func StartTestManager(ctx context.Context, mgr manager.Manager, g *gomega.GomegaWithT) *sync.WaitGroup {
+func StartTestManager(ctx context.Context, mgr mgr.Manager, g *GomegaWithT) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 

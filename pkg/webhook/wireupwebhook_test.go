@@ -16,87 +16,85 @@ package webhook
 import (
 	"context"
 	"os"
+	"testing"
 	"time"
 
-	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
 	admissionv1 "k8s.io/api/admissionregistration/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
-var _ = Describe("test if webhook's supplymentryResource create properly", func() {
-	// somehow this test only fail on travis
-	// make sure this one runs at the end, otherwise, we might register this
-	// webhook before the default one, which cause unexpected results.
-	Context("given a k8s env, it create svc and validating webhook config", func() {
-		var (
-			lMgr   mgr.Manager
-			testNs string
-			err    error
-			sstop  chan struct{}
-		)
+func TestWireupWebhook(t *testing.T) {
 
-		It("should create a service and ValidatingWebhookConfiguration", func() {
-			lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
-			Expect(err).Should(BeNil())
+	g := NewGomegaWithT(t)
 
-			sstop = make(chan struct{})
-			defer close(sstop)
-			go func() {
-				Expect(lMgr.Start(context.TODO())).Should(Succeed())
-			}()
+	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: "0"})
+	g.Expect(err).NotTo(HaveOccurred())
 
-			testNs = "default"
-			os.Setenv("POD_NAMESPACE", testNs)
-			os.Setenv("DEPLOYMENT_LABEL", testNs)
+	k8sClient = mgr.GetClient()
 
-			wbhName := "test-wbh"
-			wbhNameSetUp := func(w *WireUp) {
-				w.WebhookName = wbhName
-			}
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
 
-			wireUp, err := NewWireUp(context.TODO(), lMgr, wbhNameSetUp)
-			Expect(err).NotTo(HaveOccurred())
+	defer func() {
+		cancel()
+		mgrStopped.Wait()
+	}()
 
-			clt, err := client.New(cfg, client.Options{})
-			Expect(err).NotTo(HaveOccurred())
+	// lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
+	// Expect(err).Should(BeNil())
 
-			caCert, err := wireUp.Attach(clt)
-			Expect(err).NotTo(HaveOccurred())
+	// Expect(lMgr.Start(context.TODO())).Should(Succeed())
 
-			err = DelPreValiationCfg20(clt)
-			Expect(err).NotTo(HaveOccurred())
+	testNs := "default"
+	os.Setenv("POD_NAMESPACE", testNs)
+	os.Setenv("DEPLOYMENT_LABEL", testNs)
 
-			err = wireUp.WireUpWebhookSupplymentryResource(false, clt, caCert,
-				schema.GroupVersionKind{Group: "", Version: "v1", Kind: "channels"},
-				[]admissionv1.OperationType{admissionv1.Create})
-			Expect(err).NotTo(HaveOccurred())
+	wbhName := "test-wbh"
+	wbhNameSetUp := func(w *WireUp) {
+		w.WebhookName = wbhName
+	}
 
-			err = wireUp.WireUpWebhookSupplymentryResource(true, clt, caCert,
-				schema.GroupVersionKind{Group: "", Version: "v1", Kind: "channels"},
-				[]admissionv1.OperationType{admissionv1.Create})
-			Expect(err).NotTo(HaveOccurred())
+	wireUp, err := NewWireUp(context.TODO(), mgr, wbhNameSetUp)
+	Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(3 * time.Second)
-			wbhSvc := &corev1.Service{}
-			svcKey := wireUp.WebHookeSvcKey
-			Expect(lMgr.GetClient().Get(context.TODO(), svcKey, wbhSvc)).Should(Succeed())
-			defer func() {
-				Expect(lMgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
-			}()
+	// k8sClient, err := client.New(cfg, client.Options{})
+	// Expect(err).NotTo(HaveOccurred())
 
-			wbhCfg := &admissionv1.ValidatingWebhookConfiguration{}
-			cfgKey := types.NamespacedName{Name: GetValidatorName(wbhName)}
-			Expect(lMgr.GetClient().Get(context.TODO(), cfgKey, wbhCfg)).Should(Succeed())
+	caCert, err := wireUp.Attach(k8sClient)
+	Expect(err).NotTo(HaveOccurred())
 
-			defer func() {
-				Expect(lMgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
-			}()
-		})
-	})
-})
+	err = DelPreValiationCfg20(k8sClient)
+	Expect(err).NotTo(HaveOccurred())
+
+	err = wireUp.WireUpWebhookSupplymentryResource(false, k8sClient, caCert,
+		schema.GroupVersionKind{Group: "", Version: "v1", Kind: "channels"},
+		[]admissionv1.OperationType{admissionv1.Create})
+	Expect(err).NotTo(HaveOccurred())
+
+	err = wireUp.WireUpWebhookSupplymentryResource(true, k8sClient, caCert,
+		schema.GroupVersionKind{Group: "", Version: "v1", Kind: "channels"},
+		[]admissionv1.OperationType{admissionv1.Create})
+	Expect(err).NotTo(HaveOccurred())
+
+	time.Sleep(3 * time.Second)
+	wbhSvc := &corev1.Service{}
+	svcKey := wireUp.WebHookeSvcKey
+	Expect(mgr.GetClient().Get(context.TODO(), svcKey, wbhSvc)).Should(Succeed())
+	defer func() {
+		Expect(mgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
+	}()
+
+	wbhCfg := &admissionv1.ValidatingWebhookConfiguration{}
+	cfgKey := types.NamespacedName{Name: GetValidatorName(wbhName)}
+	Expect(mgr.GetClient().Get(context.TODO(), cfgKey, wbhCfg)).Should(Succeed())
+
+	defer func() {
+		Expect(mgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
+	}()
+
+}
