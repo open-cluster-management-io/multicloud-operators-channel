@@ -44,7 +44,7 @@ var _ = Describe("test if webhook's supplymentryResource create properly", func(
 		)
 
 		It("should create a service and ValidatingWebhookConfiguration", func() {
-			lMgr, err = ctrl.NewManager(testEnv.Config, ctrl.Options{MetricsBindAddress: "0"})
+			lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
 			Expect(err).Should(BeNil())
 
 			sstop = make(chan struct{})
