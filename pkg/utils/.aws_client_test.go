@@ -14,7 +14,17 @@
 
 package utils
 
-type FakeObjectStore struct {
-	//map[bucket]map[objName]DeployableObject[Name, Content]
-	Clt map[string]map[string]DeployableObject
+import (
+	"testing"
+
+	"github.com/onsi/gomega"
+)
+
+func TestCreate(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+	var storageHandler = &AWSHandler{}
+
+	err := storageHandler.Create("objch")
+	g.Expect(err).NotTo(gomega.HaveOccurred())
+
 }
