@@ -83,6 +83,15 @@ jobs:
         run: make test
         env:
           KUBECONFIG: /home/runner/.kube/config
+      - name: report-coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_UPLOAD_TOKEN }}
+          files: /home/runner/work/multicloud-operators-channel/multicloud-operators-channel/go/src/open-cluster-management.io/multicloud-operators-channel/coverage.out
+          flags: unit
+          name: unit
+          verbose: true
+          fail_ci_if_error: true
 
   go-sec-scan:
     name: go-sec-scan
