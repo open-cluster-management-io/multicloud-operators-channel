@@ -14,7 +14,7 @@ ENV OPERATOR=/usr/local/bin/multicluster-operators-channel \
     USER_NAME=multicluster-operators-channel
 
 # install operator binary
-COPY go/src/open-cluster-management.io/multicloud-operators-channel/build/_output/bin/multicluster-operators-channel ${OPERATOR}
+COPY --from=builder go/src/open-cluster-management.io/multicloud-operators-channel/build/_output/bin/multicluster-operators-channel ${OPERATOR}
 
 COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup
