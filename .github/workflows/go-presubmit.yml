@@ -8,7 +8,7 @@ on:
 
 env:
   # Common versions
-  GO_VERSION: '1.20'
+  GO_VERSION: '1.21'
   GO_REQUIRED_MIN_VERSION: ''
   GOPATH: '/home/runner/work/multicloud-operators-channel/multicloud-operators-channel/go'
 defaults:
@@ -84,9 +84,9 @@ jobs:
         env:
           KUBECONFIG: /home/runner/.kube/config
       - name: report-coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_UPLOAD_TOKEN }}
+          token: 0718e448-c0d1-4aa1-87dd-6761e6a5a587
           files: /home/runner/work/multicloud-operators-channel/multicloud-operators-channel/go/src/open-cluster-management.io/multicloud-operators-channel/coverage.out
           flags: unit
           name: unit
