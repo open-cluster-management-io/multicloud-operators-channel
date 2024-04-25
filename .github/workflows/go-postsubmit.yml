@@ -36,7 +36,7 @@ jobs:
       - name: report-coverage
         uses: codecov/codecov-action@v4
         with:
-          token: 0718e448-c0d1-4aa1-87dd-6761e6a5a587
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: /home/runner/work/multicloud-operators-channel/multicloud-operators-channel/go/src/open-cluster-management.io/multicloud-operators-channel/coverage.out
           flags: unit
           name: unit
