@@ -122,7 +122,7 @@ func (v *levelValue) Set(l string) error {
 		return err
 	}
 
-	v.level = zapcore.Level(int8(lvl))
+	v.level = zapcore.Level(int8(lvl)) //nolint:gosec // disable G115
 	// If log level is greater than debug, set glog/klog level to that level.
 	if lvl < -3 {
 		fs := flag.NewFlagSet("", flag.ContinueOnError)
@@ -158,7 +158,7 @@ func (v *stackLevelValue) Set(l string) error {
 		return err
 	}
 
-	v.level = zapcore.Level(int8(lvl))
+	v.level = zapcore.Level(int8(lvl)) //nolint:gosec // disable G115
 
 	return nil
 }

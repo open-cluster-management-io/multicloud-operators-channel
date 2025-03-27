@@ -394,7 +394,7 @@ func newWebhookServiceTemplate(isExternalAPIServer bool, svcKey types.Namespaced
 			Spec: corev1.ServiceSpec{
 				Ports: []corev1.ServicePort{
 					{
-						Port: int32(webHookServicePort),
+						Port: int32(webHookServicePort), //nolint:gosec // disable G115
 					},
 				},
 			},
@@ -413,7 +413,7 @@ func newWebhookServiceTemplate(isExternalAPIServer bool, svcKey types.Namespaced
 		Spec: corev1.ServiceSpec{
 			Ports: []corev1.ServicePort{
 				{
-					Port:       int32(webHookServicePort),
+					Port:       int32(webHookServicePort), //nolint:gosec // disable G115
 					TargetPort: intstr.FromInt(webHookPort),
 				},
 			},
@@ -441,7 +441,7 @@ func newWebhookEndpointTemplate(svcKey types.NamespacedName, webHookServicePort 
 				},
 				Ports: []corev1.EndpointPort{
 					{
-						Port: int32(webHookServicePort),
+						Port: int32(webHookServicePort), //nolint:gosec // disable G115
 					},
 				},
 			},
